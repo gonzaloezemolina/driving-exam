@@ -334,3 +334,36 @@ const carQuestions = [
         correctAnswer: 0
     },
 ];
+
+
+// let selectedQuestions = [];
+
+// if (carQuestions.length === 29) {
+//     while (selectedQuestions.length !== 20) {
+//         const random = carQuestions[Math.floor(Math.random()* carQuestions.length)];
+//         if (selectedQuestions.find(question => question.id === random.id)) {
+//             console.log("El ID se repite");
+//         } else {
+//             selectedQuestions.push(random);
+//             console.log(selectedQuestions.length);            
+//         }
+//     }
+// };
+
+// const gettingID = selectedQuestions.values();
+
+// for (const iterator of gettingID) {
+//     console.log(iterator.id);
+// };
+
+
+// let indexOfSelectedQuestions = 0;
+
+
+// for (let index = 0; index < 3; index++) {
+//     const element = carQuestions[index];
+//     console.log(element);
+// }
+
+
+
