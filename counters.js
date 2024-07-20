@@ -17,7 +17,7 @@ const counter = () => {
     if (time < 0 ) {
         clearInterval(interval);
         getContainer.innerHTML = `El tiempo de examén ha finalizado
-                                <button>Reiniciar</button>
+                                <button onclick="simulator">Reiniciar</button>
         `
     }
     },1000);

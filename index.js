@@ -73,17 +73,23 @@ function b2Manager(params) {
 
   getContainer.innerHTML = `<nav class="w-full flex justify-end items-end bg-yellow-400 gap-4">
   <div>
-    <h1 id="counter" class="text-red-400 bg-black"></h1>
+    <h1 id="counter" class="text-black"></h1>
   </div>
   <div>
-    <h1>0/20</h1>
+    <h1 id="counterOfQuestions"></h1>
   </div>
-  </nav>`;
+  </nav>
   
-  counter(); //From counters.js
+  <div id="pregunta"></div>
+
+  <button id="next">Siguiente</button>
+  `;
+  
+  counter(); //Function counter from counters.js
 
   let selectedQuestions = [];
 
+  //Array from carQuestions.js
   if (carQuestions.length === 29) {
       while (selectedQuestions.length !== 20) {
           const random = carQuestions[Math.floor(Math.random()* carQuestions.length)];
@@ -99,22 +105,46 @@ function b2Manager(params) {
   const gettingValues = selectedQuestions.values();
   for (const iterator of gettingValues) {
       console.log(iterator.id);
-      if (iterator.answers) {
-        iterator.answers.forEach(option => {
-          const div = document.createElement("div");
-          div.classList.add("bg-blue-400");
-          div.innerHTML = `<h2 class="text-white">${option}</h2>`;
-          getContainer.appendChild(div);
-        })
-      } else if (iterator.type === "input") {
-        const div = document.createElement("div");
-        div.innerHTML = `<h1>${iterator.question}</h1>
-                        <input>
-        `
-        getContainer.appendChild(div);
-      }
   };
-      
+
+  let num = 0;
+  let saveQuestions = [];
+  let saveAnswers = [];
+
+  const selectFirst = selectedQuestions.find(nextQuestion => nextQuestion === selectedQuestions[num]);
+  saveQuestions.push(selectFirst);
+  console.log(saveQuestions);
+  const values = saveQuestions.values();
+  for (const iterator of saveQuestions) {
+    const QuestionsCounter = document.getElementById("counterOfQuestions");
+    QuestionsCounter.innerHTML = `${saveQuestions.length}/20`
+    const getQuestionID = document.getElementById("pregunta");
+    getQuestionID.innerHTML = `<h1>${iterator.question}</h1>`;
+  }
+
+  const getNext = document.getElementById("next");
+  getNext.addEventListener("click", loadQuestions)
+
+  function loadQuestions() {
+    num++
+    if (num < 20) {
+      const selectFirst = selectedQuestions.find(nextQuestion => nextQuestion === selectedQuestions[num]);
+      if (saveQuestions.find(sameQuestion => sameQuestion === selectFirst.id)) {
+          console.log("ID repeated");
+      } else {
+          saveQuestions.push(selectFirst);
+          console.log(num);
+          console.log(saveQuestions);
+          const values = saveQuestions.values();
+          for (const iterator of saveQuestions) {
+                const QuestionsCounter = document.getElementById("counterOfQuestions");
+            QuestionsCounter.innerHTML = `${saveQuestions.length}/20`
+            const getQuestionID = document.getElementById("pregunta");
+            getQuestionID.innerHTML = `<h1>${iterator.question}</h1>`
+          }
+      }
+    }
+  }
 }
 
 
