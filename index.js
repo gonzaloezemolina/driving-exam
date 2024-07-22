@@ -8,10 +8,9 @@ const getBtn = document.getElementById("btn_start");
 const idAuto = "b2";
 const idMoto = "a1";
 
-
 const simulator = () => {
-getBtn.addEventListener("click", function () {
-  getContainer.innerHTML = `<h1 class="text-xl">Reglas del examén</h1>
+  getBtn.addEventListener("click", function () {
+    getContainer.innerHTML = `<h1 class="text-xl">Reglas del examén</h1>
                             <p>El tiempo del examén es un total de 15 minutos y se deberan contestar un total de 20 preguntas que cambiaran según la categoria elegida. Para aprobar deberás contestar correctamente 16 preguntas. El formato varia dependiendo de la pregunta y al final del examén veras tu resultado. El mismo esta basado en las leyes de Argentina. En caso de existir alguna discordancia se recomienda discreción. </p>
                             
                             <h2><strong>Seleccione una categoría</strong></h2>
@@ -30,47 +29,43 @@ getBtn.addEventListener("click", function () {
             <div>
     `;
     selectCategory();
-});
-}
+  });
+};
 
 simulator();
 
-
 const selectCategory = () => {
-    getContainer.addEventListener("click", function(event){
+  getContainer.addEventListener("click", function (event) {
     const click = event.target.id;
     console.log(click);
-    let counter = 5;
-      switch (click) {
-        case "a1":
-                  initializer(a1Manager);
-          break;
+    switch (click) {
+      case "a1":
+        initializer(a1Manager);
+        break;
 
-        case "b2":
-                  initializer(b2Manager);
-      break
-        default:
-          break;
-      }
-  })
+      case "b2":
+        initializer(b2Manager);
+        break;
+      default:
+        break;
+    }
+  });
 };
 
 const initializer = (test) => {
   let counter = 5;
   const interval = setInterval(() => {
-    getContainer.innerHTML= `<h1 class="text-xl">${counter}</h1>`;
+    getContainer.innerHTML = `<h1 class="text-xl">${counter}</h1>`;
     counter = counter - 1;
-  
-      if (counter < 0 ) {
-        clearInterval(interval);
-        test();
-      }
-  },1000)
-}
 
+    if (counter < 0) {
+      clearInterval(interval);
+      test();
+    }
+  }, 1000);
+};
 
 function b2Manager(params) {
-
   getContainer.innerHTML = `<nav class="w-full flex justify-end items-end bg-yellow-400 gap-4">
   <div>
     <h1 id="counter" class="text-black"></h1>
@@ -81,79 +76,136 @@ function b2Manager(params) {
   </nav>
   
   <div id="pregunta"></div>
-
+  <div id="imagen"></div>
+  <section id="options"></section>
+  <div id="DidntSelect"><h2></h2></div>
   <button id="next">Siguiente</button>
   `;
-  
+
   counter(); //Function counter from counters.js
 
   let selectedQuestions = [];
 
   //Array from carQuestions.js
   if (carQuestions.length === 29) {
-      while (selectedQuestions.length !== 20) {
-          const random = carQuestions[Math.floor(Math.random()* carQuestions.length)];
-          if (selectedQuestions.find(question => question.id === random.id)) {
-              console.log("El ID se repite");
-          } else {
-              selectedQuestions.push(random);
-              console.log(selectedQuestions.length);            
-          }
-      }
-  };
-
-  const gettingValues = selectedQuestions.values();
-  for (const iterator of gettingValues) {
-      console.log(iterator.id);
-  };
-
-  let num = 0;
-  let saveQuestions = [];
-  let saveAnswers = [];
-
-  const selectFirst = selectedQuestions.find(nextQuestion => nextQuestion === selectedQuestions[num]);
-  saveQuestions.push(selectFirst);
-  console.log(saveQuestions);
-  const values = saveQuestions.values();
-  for (const iterator of saveQuestions) {
-    const QuestionsCounter = document.getElementById("counterOfQuestions");
-    QuestionsCounter.innerHTML = `${saveQuestions.length}/20`
-    const getQuestionID = document.getElementById("pregunta");
-    getQuestionID.innerHTML = `<h1>${iterator.question}</h1>`;
-  }
-
-  const getNext = document.getElementById("next");
-  getNext.addEventListener("click", loadQuestions)
-
-  function loadQuestions() {
-    num++
-    if (num < 20) {
-      const selectFirst = selectedQuestions.find(nextQuestion => nextQuestion === selectedQuestions[num]);
-      if (saveQuestions.find(sameQuestion => sameQuestion === selectFirst.id)) {
-          console.log("ID repeated");
+    while (selectedQuestions.length !== 20) {
+      const random =
+        carQuestions[Math.floor(Math.random() * carQuestions.length)];
+      if (selectedQuestions.find((question) => question.id === random.id)) {
+        console.log("El ID se repite");
       } else {
-          saveQuestions.push(selectFirst);
-          console.log(num);
-          console.log(saveQuestions);
-          const values = saveQuestions.values();
-          for (const iterator of saveQuestions) {
-                const QuestionsCounter = document.getElementById("counterOfQuestions");
-            QuestionsCounter.innerHTML = `${saveQuestions.length}/20`
-            const getQuestionID = document.getElementById("pregunta");
-            getQuestionID.innerHTML = `<h1>${iterator.question}</h1>`
-          }
+        selectedQuestions.push(random);
+        console.log(selectedQuestions.length);
       }
     }
   }
+
+  const gettingValues = selectedQuestions.values();
+  for (const iterator of gettingValues) {
+    console.log(iterator.id);
+  }
+
+  let num = 0;
+  let saveQuestions = [];
+  let userAnswers = [];
+
+  const selectFirst = selectedQuestions.find(
+    (nextQuestion) => nextQuestion === selectedQuestions[num]
+  );
+  saveQuestions.push(selectFirst);
+  console.log(saveQuestions);
+  const values = saveQuestions.values();
+  for (const iterator of values) {
+    const QuestionsCounter = document.getElementById("counterOfQuestions");
+    QuestionsCounter.innerHTML = `${saveQuestions.length}/20`;
+    const getQuestionID = document.getElementById("pregunta");
+    getQuestionID.innerHTML = `<h1>${iterator.question}</h1>`;
+    iterator.answers.forEach((option) => {
+      const response = document.createElement("div");
+      response.innerHTML = `<h2>${option}</h2>`;
+      const section = document.getElementById("options");
+      section.appendChild(response);
+    });
+  }
+
+  const getNext = document.getElementById("next");
+  getNext.addEventListener("click", loadQuestions);
+
+  function loadQuestions(getResponses) {
+    if (saveQuestions.length === 19) {
+      //Manejar para cuando se completen todas las preguntas
+      getNext.innerText = `Finalizar`;
+      getNext.addEventListener("click", function () {
+        getContainer.innerHTML = `<h1>Este es tu resultado</h1>`;
+      });
+    }
+    num++;
+    if (num < 20) {
+      const selectFirst = selectedQuestions.find(
+        (nextQuestion) => nextQuestion === selectedQuestions[num]
+      );
+      if (
+        saveQuestions.find((sameQuestion) => sameQuestion === selectFirst.id)
+      ) {
+        console.log("ID repeated");
+      } else {
+        saveQuestions.push(selectFirst);
+        console.log(num);
+        console.log(saveQuestions);
+        const values = saveQuestions.values();
+        for (const iterator of values) {
+          const QuestionsCounter =
+          document.getElementById("counterOfQuestions");
+          QuestionsCounter.innerHTML = `${saveQuestions.length}/20`;
+          const getQuestionID = document.getElementById("pregunta");
+          getQuestionID.innerHTML = `<h1>${iterator.question}</h1>`;
+          if (iterator.img) {
+            const getDivOfImage = document.getElementById("imagen");
+            getDivOfImage.innerHTML = `<img src=${iterator.img}></img>` 
+          } else{
+            console.log("No contiene imagen");
+            const getDivOfImage = document.getElementById("imagen");
+            getDivOfImage.innerHTML = ``
+          }
+          if (iterator.type === "multiple-choice") {
+            const section = document.getElementById("options");
+            section.innerHTML = ``;
+            section.addEventListener("click", function(){}) //Podriamos agregar una funcion aca, para no alargar la función. El problema es si accede a los iteradores.
+            iterator.answers.forEach((option,index) => {
+              const response = document.createElement("div");
+              response.id = `${index}`;
+              response.className = "cursor-pointer"
+              response.innerHTML = `<h2>${option}</h2>`;
+              section.appendChild(response);
+            });
+          } else if (iterator.type === "input") {
+            const section = document.getElementById("options");
+            section.innerHTML = ``;
+            const input = document.createElement("input");
+            input.className = "border-2 border-solid border-blue-400 rounded-lg px-4 py-2"
+            section.appendChild(input);
+          }
+        }
+      }
+    }
+  }
+
+  //Si el indice, length de la opcion del array de answers es igual a correctAnswer. Debemos hacer que ese elemento/opcion se empuje a un array de  
+
+              //Lo ideal seria que esta funcion este dentro de loadQuestions. 
+              //Tengo que poder seleccionar una opcion. Para posteriormente, dependiendo que ID
+              //haya sido seleccionado, subir esa opcion al array de userAnswers. Una idea es agregar un parametro 
+              //En loadquestion, y hacer un callback con esta funcion. El problema es como acceder a las opciones, probablemente de undefined.
+              //Esta funcion, mas bien que acompañar/integrarse al button next, debe ser la funcion para seleccionar respuesta.
 }
+
 
 
 
 
 function a1Manager(params) {
-  getContainer.innerHTML = `Esto es para A1`;
+  getContainer.innerHTML = `Esta categoria se encuentra en proceso`;
 }
-
 
 userAnswers = [];
 questionsGiven = [];

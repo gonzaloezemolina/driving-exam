@@ -1,5 +1,5 @@
 
-let time = (20*60) + 0;
+let time = (15*60) + 0;
 
 const counter = () => {
 
